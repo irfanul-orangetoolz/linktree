@@ -13,25 +13,23 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.init(
         {
-            user_id: {
+            id: {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
-                primaryKey: true,
+                primaryKey: true
             },
             email: DataTypes.STRING,
             password_hash: DataTypes.STRING,
             name: DataTypes.STRING,
             bio: DataTypes.TEXT,
-            profile_image_url: DataTypes.STRING,
+            profile_image_url: DataTypes.STRING
         },
         {
             sequelize,
             modelName: 'User',
-            underscored: true,
-        },
+            underscored: true
+        }
     );
 
-    
-
-    return  User;
+    return User;
 };
