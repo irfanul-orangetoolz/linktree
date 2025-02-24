@@ -1,10 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-// const passport = require('passport');
-// const httpStatus = require('http-status');
-// const routes = require('./route');
-// const { errorConverter, errorHandler } = require('./middlewares/error');
-// const ApiError = require('./helper/ApiError');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes'); 
 
 const app = express();
 // enable cors
@@ -17,7 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // parse json request body
 app.use(express.json());
-
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
 app.get('/api/v1/test', async (req, res) => {
     res.status(200).send('Congratulations! API is working!');
 });
