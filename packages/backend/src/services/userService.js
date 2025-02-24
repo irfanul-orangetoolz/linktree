@@ -1,61 +1,21 @@
-const User = require('../models/userModel'); // Assuming you have a User model
+const UserDao = require('../dao/UserDao'); // Assuming you have a UserDao for database operations
 
-const getUserById = async (userId) => {
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new Error('User not found');
+class UserService {
+  constructor() {
+    this.userDao = new UserDao();
   }
-  return user;
-};
 
-const updateUser = async (userId, updateData) => {
-  const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
-  if (!user) {
-    throw new Error('User not found');
+  async getUserById(userId) {
+    return await this.userDao.findById(userId);
   }
-  return user;
-};
 
-const deleteUser = async (userId) => {
-  const user = await User.findByIdAndDelete(userId);
-  if (!user) {
-    throw new Error('User not found');
+  async updateUser(userId, updateData) {
+    return await this.userDao.updateWhere(updateData,{user_id:userId});
   }
-  return { message: 'User deleted successfully' };
-};
 
-module.exports = {
-  getUserById,
-  updateUser,
-  deleteUser,
-};const User = require('../models/userModel'); // Assuming you have a User model
-
-const getUserById = async (userId) => {
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new Error('User not found');
+  async deleteUser(userId) {
+    return await this.userDao.deleteByWhere({user_id: userId});
   }
-  return user;
-};
+}
 
-const updateUser = async (userId, updateData) => {
-  const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
-  if (!user) {
-    throw new Error('User not found');
-  }
-  return user;
-};
-
-const deleteUser = async (userId) => {
-  const user = await User.findByIdAndDelete(userId);
-  if (!user) {
-    throw new Error('User not found');
-  }
-  return { message: 'User deleted successfully' };
-};
-
-module.exports = {
-  getUserById,
-  updateUser,
-  deleteUser,
-};
+module.exports = UserService;

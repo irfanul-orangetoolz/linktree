@@ -29,6 +29,7 @@ const SignUpPage = () => {
     try {
       const response = await signup(data);
       login({ userId: response.userId }, response.token);
+      
       navigate('/');
     } catch (err) {
       setError('Signup failed. Please try again.');

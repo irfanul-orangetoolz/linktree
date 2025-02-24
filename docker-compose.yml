@@ -10,13 +10,12 @@ services:
     restart: unless-stopped
     volumes:
       - ./packages/frontend:/app
-      - /app/node_modules
     command: sh -c "pnpm install && pnpm start"
     user: root
     ports:
       - 7000:7000
     environment:
-      - REACT_APP_API_URL=http://backend:7001/api/v1
+      - REACT_APP_API_URL=http://localhost:7001/api/v1
     depends_on:
       - backend
     networks:
@@ -31,7 +30,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./packages/backend:/app
-      - /app/node_modules
     command: sh -c "pnpm install && pnpm start"
     user: root
     ports:

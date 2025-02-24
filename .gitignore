@@ -2,7 +2,7 @@
 
 .env
 .venv
-
+**/.pnpm-store
 
 /secrets
 node_modules
