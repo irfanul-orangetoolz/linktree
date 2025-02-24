@@ -1,0 +1,702 @@
+openapi: 3.0.0
+info:
+  title: Platform API
+  description: API documentation for the platform
+  version: 1.0.0
+servers:
+  - url: /api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserCreate:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        name:
+          type: string
+        bio:
+          type: string
+        profileImageUrl:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        token:
+          type: string
+    LoginCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    UserPrivate:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        bio:
+          type: string
+        profileImageUrl:
+          type: string
+    UserPublic:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        profileImageUrl:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkPublic'
+        socialAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialAccountPublic'
+    LinkPublic:
+      type: object
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+    SocialAccountPublic:
+      type: object
+      properties:
+        platform:
+          type: string
+        followerCount:
+          type: integer
+        totalViews:
+          type: integer
+    SocialAccount:
+      type: object
+      properties:
+        socialId:
+          type: integer
+        platform:
+          type: string
+        followerCount:
+          type: integer
+        totalViews:
+          type: integer
+    SocialAccountCreate:
+      type: object
+      required:
+        - platform
+        - accessToken
+      properties:
+        platform:
+          type: string
+        accessToken:
+          type: string
+    SocialData:
+      type: object
+      properties:
+        followerCount:
+          type: integer
+        totalViews:
+          type: integer
+        engagementMetrics:
+          type: object
+          additionalProperties:
+            type: integer
+        recentContent:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              url:
+                type: string
+    Link:
+      type: object
+      properties:
+        linkId:
+          type: integer
+        title:
+          type: string
+        url:
+          type: string
+        priority:
+          type: integer
+        isArchived:
+          type: boolean
+    LinkCreate:
+      type: object
+      required:
+        - title
+        - url
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+        priority:
+          type: integer
+    LinkUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+    PriorityUpdate:
+      type: object
+      required:
+        - priority
+      properties:
+        priority:
+          type: integer
+    ArchiveUpdate:
+      type: object
+      required:
+        - isArchived
+      properties:
+        isArchived:
+          type: boolean
+    AnalyticsViews:
+      type: object
+      properties:
+        totalViews:
+          type: integer
+        viewsOverTime:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              count:
+                type: integer
+    AnalyticsClicks:
+      type: object
+      properties:
+        totalClicks:
+          type: integer
+        clicksPerLink:
+          type: array
+          items:
+            type: object
+            properties:
+              linkId:
+                type: integer
+              title:
+                type: string
+              clickCount:
+                type: integer
+    TopLink:
+      type: object
+      properties:
+        linkId:
+          type: integer
+        title:
+          type: string
+        clickCount:
+          type: integer
+    Settings:
+      type: object
+      properties:
+        theme:
+          type: string
+        backgroundColor:
+          type: string
+        buttonStyle:
+          type: string
+        showBranding:
+          type: boolean
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+paths:
+  /auth/signup:
+    post:
+      summary: Register a new user account
+      description: Creates a new user account and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /auth/login:
+    post:
+      summary: Authenticate a user and return a token
+      description: Authenticates a user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginCredentials'
+      responses:
+        '200':
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /auth/logout:
+    post:
+      summary: Invalidate the user's token
+      description: Invalidates the user's token for logout
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /auth/me:
+    get:
+      summary: Retrieve the current user's profile
+      description: Retrieves the profile of the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPrivate'
+  /users/{user_id}:
+    get:
+      summary: Fetch a user's public profile
+      description: Retrieves the public profile of a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Public profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPublic'
+    put:
+      summary: Update the user's profile
+      description: Updates the profile of the authenticated user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete the user's account
+      description: Deletes the account of the authenticated user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Account deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /social/connect:
+    post:
+      summary: Connect a social media account
+      description: Connects a social media account to the user's profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialAccountCreate'
+      responses:
+        '200':
+          description: Social account connected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccount'
+  /social/accounts:
+    get:
+      summary: Retrieve connected social media accounts
+      description: Retrieves the list of connected social media accounts for the user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Social accounts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SocialAccount'
+  /social/accounts/{social_id}:
+    delete:
+      summary: Disconnect a social media account
+      description: Disconnects a social media account from the user's profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: social_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Social account disconnected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /social/data/{social_id}:
+    get:
+      summary: Fetch social media data
+      description: Fetches and caches social media data for the specified account
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: social_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Social media data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialData'
+  /links:
+    get:
+      summary: Retrieve active links
+      description: Retrieves all active links for the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Links retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Link'
+    post:
+      summary: Add a new custom link
+      description: Adds a new custom link to the user's profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkCreate'
+      responses:
+        '200':
+          description: Link added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+  /links/{link_id}:
+    put:
+      summary: Update an existing link
+      description: Updates the title and URL of an existing link
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: link_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkUpdate'
+      responses:
+        '200':
+          description: Link updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a link
+      description: Deletes a link from the user's profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: link_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Link deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /links/{link_id}/priority:
+    put:
+      summary: Update the priority of a link
+      description: Updates the display priority of a link
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: link_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriorityUpdate'
+      responses:
+        '200':
+          description: Priority updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /links/{link_id}/archive:
+    put:
+      summary: Archive or unarchive a link
+      description: Archives or unarchives a link
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: link_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArchiveUpdate'
+      responses:
+        '200':
+          description: Link archived/unarchived successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /analytics/views:
+    get:
+      summary: Retrieve profile view counts
+      description: Retrieves total views and views over time for the user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Views retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsViews'
+  /analytics/clicks:
+    get:
+      summary: Retrieve link click counts
+      description: Retrieves total clicks and clicks per link for the user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Clicks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsClicks'
+  /analytics/top-links:
+    get:
+      summary: Retrieve top-performing links
+      description: Retrieves the top-performing links based on click counts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Top links retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TopLink'
+  /settings:
+    get:
+      summary: Retrieve user settings
+      description: Retrieves the customization settings for the user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+    put:
+      summary: Update user settings
+      description: Updates the customization settings for the user's profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        '200':
+          description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /profiles/{user_id}:
+    get:
+      summary: Fetch a user's public profile for sharing
+      description: Retrieves the public profile of a user based on their user_id
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Public profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPublic'
+  /profiles/preview:
+    get:
+      summary: Retrieve a preview of the user's profile
+      description: Retrieves a preview of the authenticated user's profile for editing
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile preview retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPublic'
+  /admin/users:
+    get:
+      summary: List all users (admin only)
+      description: Retrieves a list of all users (restricted to admin users)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserPrivate'
+  /admin/analytics:
+    get:
+      summary: Retrieve platform-wide analytics (admin only)
+      description: Retrieves platform-wide analytics data (restricted to admin users)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUsers:
+                    type: integer
+                  totalViews:
+                    type: integer
+                  totalClicks:
+                    type: integer
