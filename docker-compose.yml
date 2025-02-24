@@ -12,6 +12,7 @@ services:
       - ./packages/frontend:/app
       - /app/node_modules
     command: sh -c "pnpm install && pnpm start"
+    user: root
     ports:
       - 7000:7000
     environment:
@@ -32,6 +33,7 @@ services:
       - ./packages/backend:/app
       - /app/node_modules
     command: sh -c "pnpm install && pnpm start"
+    user: root
     ports:
       - 7001:7001
     environment:
