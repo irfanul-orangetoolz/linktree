@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 // Base URL for your backend (update this based on your deployed backend URL)
-const API_BASE_URL = import.meta.env.REACT_APP_API_URL ? import.meta.env.REACT_APP_API_URL : 'http://localhost:5000/api/v1';
+const API_BASE_URL = import.meta.env.REACT_APP_API_URL ? import.meta.env.REACT_APP_API_URL : 'http://localhost:7001/api/v1';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: 'http://localhost:7001/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,9 +15,10 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log(config);
   return config;
 }, (error) => Promise.reject(error));
-
+console.log(API_BASE_URL, api);
 export const signup = (data) =>
   api.post('/auth/signup', data).then((response) => response.data);
 

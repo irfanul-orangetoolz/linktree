@@ -13,7 +13,7 @@ RUN pnpm install
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 7000
+EXPOSE 7070
 
 # Build the application
 RUN pnpm run build

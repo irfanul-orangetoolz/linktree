@@ -3,7 +3,7 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface.createTable('social_media_accounts', {
-            social_id: {
+            id: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
                 primaryKey: true

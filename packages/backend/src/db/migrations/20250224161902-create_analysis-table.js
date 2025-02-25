@@ -3,7 +3,7 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface.createTable('analytics', {
-            analytic_id: {
+            id: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
                 primaryKey: true
@@ -24,7 +24,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'links',
-                    key: 'link_id'
+                    key: 'id'
                 },
                 onDelete: 'SET NULL'
             },
