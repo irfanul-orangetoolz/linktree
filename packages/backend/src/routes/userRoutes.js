@@ -1,12 +1,10 @@
-// const express = require('express');
-// const UserController = require('../controllers/userController');
-// const { authenticate } = require('../middleware/authMiddleware'); // Assuming you have an authentication middleware
+const express = require('express');
+const userController = require('../controllers/userController');
+const router = express.Router();
+const { authenticate } = require('../middleware/authMiddleware'); 
 
-// const router = express.Router();
-// const userController = new UserController(); // Create an instance of UserController
+router.get('/:userId', userController.getUserById);
+router.put('/:userId',authenticate, userController.updateUser);
+router.delete('/:userId',authenticate, userController.deleteUser);
 
-// router.get('/:user_id', userController.getUser);
-// router.put('/:user_id', authenticate, userController.updateUserProfile);
-// router.delete('/:user_id', authenticate, userController.deleteUserProfile);
-
-// module.exports = router;
+module.exports = router;

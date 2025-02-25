@@ -1,73 +1,54 @@
-const LinkService = require('../services/linkService');
+const linkService = require('../services/linkService');
 
-class LinkController {
-  constructor() {
-    this.linkService = new LinkService();
-  }
-
-  async createLink(req, res) {
+// Retrieve all links for authenticated user
+const getLinks = async (req, res) => {
     try {
-      const { title, url, priority } = req.body;
-      const userId = req.user.id; // Assuming user ID is added to req.user by middleware
-      const link = await this.linkService.createLink(userId, title, url, priority);
-      res.status(200).json(link);
+      const { id } = req.user.dataValues;
+        const links = await linkService.getLinks(id);
+        res.json(links);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async getLinks(req, res) {
+// Add a new link
+const createLink = async (req, res) => {
     try {
-      const userId = req.user.id; // Assuming user ID is added to req.user by middleware
-      const links = await this.linkService.getLinks(userId);
-      res.status(200).json(links);
+        const { id } = req.user.dataValues;
+        const { title, url, priority } = req.body;
+        const link = await linkService.createLink(id, title, url, priority);
+        res.status(201).json(link);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async updateLink(req, res) {
+// Update an existing link
+const updateLink = async (req, res) => {
     try {
-      const linkId = req.params.link_id;
-      const updateData = req.body;
-      const link = await this.linkService.updateLink(linkId, updateData);
-      res.status(200).json(link);
+        const { link_id } = req.params;
+        const updateData = req.body;
+        const updatedLink = await linkService.updateLink(link_id, updateData);
+        res.json(updatedLink);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async deleteLink(req, res) {
+// Delete a link
+const deleteLink = async (req, res) => {
     try {
-      const linkId = req.params.link_id;
-      const result = await this.linkService.deleteLink(linkId);
-      res.status(200).json(result);
+        const { link_id } = req.params;
+        await linkService.deleteLink(link_id);
+        res.json({ message: 'Link deleted successfully' });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async updatePriority(req, res) {
-    try {
-      const linkId = req.params.link_id;
-      const { priority } = req.body;
-      const link = await this.linkService.updatePriority(linkId, priority);
-      res.status(200).json(link);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-
-  async archiveLink(req, res) {
-    try {
-      const linkId = req.params.link_id;
-      const { isArchived } = req.body;
-      const link = await this.linkService.archiveLink(linkId, isArchived);
-      res.status(200).json(link);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-}
-
-module.exports = LinkController;
+module.exports = {
+    getLinks,
+    createLink,
+    updateLink,
+    deleteLink
+};

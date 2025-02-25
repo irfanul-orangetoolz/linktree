@@ -1,55 +1,41 @@
-const LinkDao = require('../dao/LinkDao'); // Assuming you have a LinkDao for database operations
+const { Link } = require('../models');
 
-class LinkService {
-  constructor() {
-    this.linkDao = new LinkDao();
+// Retrieve all links for a user
+const getLinks = async (userId) => {
+    return await Link.findAll({ where: { user_id: userId } });
+};
+
+// Create a new link
+const createLink = async (userId, title, url, priority) => {
+    const link = new Link({ user_id: userId, title, url, priority });
+  await link.save();
+  return link;
+};
+
+// Update an existing link
+const updateLink = async (linkId, updateData) => {
+  const link = await Link.update(
+    updateData,
+    { where: { id: linkId } }
+  );
+  if (!link) {
+    throw new Error('Link not found');
   }
+    return { message: 'Link updated successfully' };;
+};
 
-  async createLink(userId, title, url, priority) {
-    const link = await this.linkDao.create({
-      user_id: userId,
-      title,
-      url,
-      priority,
-    });
-    return link;
-  }
-
-  async getLinks(userId) {
-    return await this.linkDao.findByWhere({ user_id: userId });
-  }
-
-  async updateLink(linkId, updateData) {
-    const updated = await this.linkDao.updateWhere(updateData, { link_id: linkId });
-    if (!updated) {
-      throw new Error('Link not found');
+// Delete a link
+const deleteLink = async (linkId) => {
+    const link = await Link.findByPk(linkId);
+    if (!link) {
+        throw new Error('Link not found');
     }
-    return updated;
-  }
+    await link.destroy();
+};
 
-  async deleteLink(linkId) {
-    const deleted = await this.linkDao.deleteByWhere({ link_id: linkId });
-    if (!deleted) {
-      throw new Error('Link not found');
-    }
-    return { message: 'Link deleted successfully' };
-  }
-
-  async updatePriority(linkId, priority) {
-    const updated = await this.linkDao.updateWhere( { priority }, { link_id: linkId });
-    if (!updated) {
-      throw new Error('Link not found');
-    }
-    return updated;
-  }
-
-  async archiveLink(linkId, isArchived) {
-    const updated = await this.linkDao.updateWhere({ is_archived: isArchived }, { link_id: linkId });
-    if (!updated) {
-      throw new Error('Link not found');
-    }
-    return updated;
-  }
-}
-
-module.exports = LinkService;
+module.exports = {
+    getLinks,
+    createLink,
+    updateLink,
+    deleteLink
+};

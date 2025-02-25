@@ -47,10 +47,10 @@ export const deleteLink = (linkId) =>
   api.delete(`/links/${linkId}`).then((response) => response.data);
 
 export const setLinkPriority = (linkId, priority) =>
-  api.put(`/links/${linkId}/priority`, { priority }).then((response) => response.data);
+  api.put(`/links/${linkId}`, { priority }).then((response) => response.data);
 
 export const archiveLink = (linkId, isArchived) =>
-  api.put(`/links/${linkId}/archive`, { isArchived }).then((response) => response.data);
+  api.put(`/links/${linkId}`, { isArchived }).then((response) => response.data);
 
 export const getProfileViews = () =>
   api.get('/analytics/views').then((response) => response.data);
@@ -68,7 +68,7 @@ export const updateSettings = (data) =>
   api.put('/settings', data).then((response) => response.data);
 
 export const getProfilePreview = () =>
-  api.get('/profiles/preview').then((response) => response.data);
+  api.get('/profiles/preview/mode').then((response) => response.data);
 
 export const getPublicProfile = (username) =>
     axios.get(`${API_BASE_URL}/profiles/${username}`).then((response) => response.data);

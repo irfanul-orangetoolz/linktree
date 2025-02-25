@@ -57,7 +57,7 @@ const LinkManagementPage = () => {
 
   const handleEditLink = async (data) => {
     try {
-      await updateLink(editLink.linkId, data);
+      await updateLink(editLink.id, data);
       fetchLinks();
       setEditLink(null);
       setValidatedUrl(null);
@@ -133,7 +133,7 @@ const LinkManagementPage = () => {
         {editLink && (
           <div className="mb-6">
             <LinkForm
-              onSubmit={editLink.linkId ? handleEditLink : handleAddLink}
+              onSubmit={editLink.id ? handleEditLink : handleAddLink}
               initialData={editLink}
               onCancel={() => {
                 setEditLink(null);
@@ -173,25 +173,25 @@ const LinkManagementPage = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeleteLink(link.linkId)}
+                    onClick={() => handleDeleteLink(link.id)}
                     className="text-red-500 hover:underline"
                   >
                     Delete
                   </button>
                   <button
-                    onClick={() => handleSetPriority(link.linkId, link.priority + 1)}
+                    onClick={() => handleSetPriority(link.id, link.priority + 1)}
                     className="text-green-500 hover:underline"
                   >
                     ↑
                   </button>
                   <button
-                    onClick={() => handleSetPriority(link.linkId, link.priority - 1)}
+                    onClick={() => handleSetPriority(link.id, link.priority - 1)}
                     className="text-green-500 hover:underline"
                   >
                     ↓
                   </button>
                   <button
-                    onClick={() => handleArchiveLink(link.linkId, link.isArchived)}
+                    onClick={() => handleArchiveLink(link.id, link.isArchived)}
                     className="text-gray-500 hover:underline"
                   >
                     {link.isArchived ? 'Unarchive' : 'Archive'}

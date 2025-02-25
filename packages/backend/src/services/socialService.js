@@ -1,32 +1,47 @@
-const SocialAccountDao = require('../dao/SocialMediaAccount'); // Assuming you have a SocialAccountDao for database operations
+const { SocialMediaAccount } = require('../models');
 
-class SocialService {
-    constructor() {
-        this.socialAccountDao = new SocialAccountDao();
+// Connect a social media account
+const connectSocialAccount = async (userId, platform, accessToken) => {
+    const social = new SocialMediaAccount({
+        platform,
+        user_id: userId,
+        access_token: accessToken
+    });
+    await social.save();
+    return social
+};
+
+// Retrieve connected social media accounts
+const getSocialAccounts = async (userId) => {
+    return await SocialMediaAccount.findAll({ where: { user_id: userId } });
+};
+
+// Fetch social media data (dummy data for now, replace with API fetch if needed)
+const getSocialData = async (socialId) => {
+    const socialAccount = await SocialMediaAccount.findByPk(socialId);
+    if (!socialAccount) {
+        throw new Error('Social account not found');
     }
+    return {
+        platform: socialAccount.platform,
+        followerCount: socialAccount.follower_count || 0,
+        totalViews: socialAccount.total_views || 0,
+        engagementMetrics: socialAccount.engagement_metrics || {}
+    };
+};
 
-    async connectSocialAccount(userId, platform, accessToken) {
-        const socialAccount = await this.socialAccountDao.create({
-            user_id: userId,
-            platform,
-            access_token: accessToken
-        });
-        return socialAccount;
+// Disconnect a social media account
+const disconnectSocialAccount = async (socialId) => {
+    const socialAccount = await SocialMediaAccount.findByPk(socialId);
+    if (!socialAccount) {
+        throw new Error('Social account not found');
     }
+    await socialAccount.destroy();
+};
 
-    async getSocialAccounts(userId) {
-        return await this.socialAccountDao.findByWhere({ user_id: userId });
-    }
-
-    async disconnectSocialAccount(socialId) {
-        return await this.socialAccountDao.deleteByWhere({
-            social_id: socialId
-        });
-    }
-
-    async getSocialData(socialId) {
-        return await this.socialAccountDao.findByWhere({ social_id: socialId });
-    }
-}
-
-module.exports = SocialService;
+module.exports = {
+    connectSocialAccount,
+    getSocialAccounts,
+    getSocialData,
+    disconnectSocialAccount
+};

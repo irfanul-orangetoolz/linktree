@@ -1,10 +1,10 @@
-version: '3.8'
+# version: '3.8'
 
 services:
     frontend:
         build:
-            context: .packages/frontend
-            dockerfile: frontend.Dockerfile
+            context: ./packages/frontend
+            dockerfile: ../../frontend.Dockerfile
         container_name: linktree-frontend
         working_dir: /app
         restart: unless-stopped

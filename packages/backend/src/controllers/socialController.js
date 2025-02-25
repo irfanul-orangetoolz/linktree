@@ -1,50 +1,53 @@
-const SocialService = require('../services/socialService');
+const socialService = require('../services/socialService');
 
-class SocialController {
-  constructor() {
-    this.socialService = new SocialService();
-  }
-
-  async connect(req, res) {
+// Connect a social media account
+const connectSocialAccount = async (req, res) => {
     try {
-      const { platform, accessToken } = req.body;
-      const userId = req.user.id; // Assuming user ID is added to req.user by middleware
-      const socialAccount = await this.socialService.connectSocialAccount(userId, platform, accessToken);
-      res.status(200).json(socialAccount);
+        const { platform, accessToken } = req.body;
+        const { id } = req.user.dataValues;
+        const socialAccount = await socialService.connectSocialAccount(id, platform, accessToken);
+        res.status(201).json(socialAccount);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async getAccounts(req, res) {
+// Retrieve connected social media accounts
+const getSocialAccounts = async (req, res) => {
     try {
-      const userId = req.user.id; // Assuming user ID is added to req.user by middleware
-      const socialAccounts = await this.socialService.getSocialAccounts(userId);
-      res.status(200).json(socialAccounts);
+       const { id } = req.user.dataValues;
+        const socialAccounts = await socialService.getSocialAccounts(id);
+        res.json(socialAccounts);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async disconnect(req, res) {
+// Fetch social media data
+const getSocialData = async (req, res) => {
     try {
-      const socialId = req.params.social_id;
-      const result = await this.socialService.disconnectSocialAccount(socialId);
-      res.status(200).json(result);
+        const { social_id } = req.params;
+        const socialData = await socialService.getSocialData(social_id);
+        res.json(socialData);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async getData(req, res) {
+// Disconnect a social media account
+const disconnectSocialAccount = async (req, res) => {
     try {
-      const socialId = req.params.social_id;
-      const socialData = await this.socialService.getSocialData(socialId);
-      res.status(200).json(socialData);
+        const { social_id } = req.params;
+        await socialService.disconnectSocialAccount(social_id);
+        res.json({ message: 'Social account disconnected successfully' });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
-}
+};
 
-module.exports = SocialController;
+module.exports = {
+    connectSocialAccount,
+    getSocialAccounts,
+    getSocialData,
+    disconnectSocialAccount
+};
