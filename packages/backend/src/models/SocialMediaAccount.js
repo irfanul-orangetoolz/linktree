@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             follower_count: DataTypes.INTEGER,
             total_views: DataTypes.INTEGER,
             engagement_metrics: DataTypes.JSONB,
+            meta_data: DataTypes.JSONB,
+            expirein: DataTypes.DATE,
+            data_expirein: DataTypes.DATE,
             last_fetched: DataTypes.DATE
         },
         {

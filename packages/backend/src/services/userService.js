@@ -45,8 +45,18 @@ const deleteUser = async (userId) => {
     return { message: 'User deleted successfully' };
 };
 
+const getAllUser = async () => {
+    const users = await User.findAll()
+    let userData = []
+    for (const user of users) {
+        const usersData = user.dataValues
+        userData.push(usersData)
+    }
+    return userData
+}
 module.exports = {
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    getAllUser
 };

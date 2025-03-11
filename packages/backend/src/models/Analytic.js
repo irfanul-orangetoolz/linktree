@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     class Analytic extends Model {
         static associate(models) {
             Analytic.belongsTo(models.User, { foreignKey: 'id' });
-            Analytic.belongsTo(models.Link, { foreignKey: 'id' });
+            Analytic.belongsTo(models.Link, { foreignKey: 'link_id' });
         }
     }
     Analytic.init(

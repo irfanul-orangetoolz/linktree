@@ -8,7 +8,7 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const settingRoute = require('./routes/settingRoutes');
 const profileRoute = require('./routes/profileRoute');
 const adminRoutes = require('./routes/adminRoutes');
-
+require("./cronjobs")
 const app = express();
 // enable cors
 app.use(cors());
@@ -32,22 +32,7 @@ app.get('/api/v1/test', async (req, res) => {
     res.status(200).send('Congratulations! API is working!');
 });
 
-// app.use('/api/v1', routes);
 
-// jwt authentication
-// app.use(passport.initialize());
-// passport.use('jwt', jwtStrategy);
-
-// send back a 404 error for any unknown api request
-// app.use((req, res, next) => {
-//     next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-// });
-
-// convert error to ApiError, if needed
-// app.use(errorConverter);
-
-// handle error
-// app.use(errorHandler);
 require('pg').defaults.parseInt8 = true;
 
 module.exports = app;

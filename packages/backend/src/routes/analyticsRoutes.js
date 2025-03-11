@@ -10,6 +10,7 @@ router.get('/views', authenticate, analyticsController.getProfileViews);
 router.get('/clicks', authenticate, analyticsController.getLinkClicks);
 
 // Retrieve top-performing links
-router.get('/top-links', authenticate, analyticsController.getTopLinks);
+router.get('/top-links',authenticate, analyticsController.getTopLinks);
+router.post('/count-click-view', analyticsController.countClicksAndViews);
 
 module.exports = router;

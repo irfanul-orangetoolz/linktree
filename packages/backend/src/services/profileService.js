@@ -21,6 +21,29 @@ const getUserProfile = async (userId) => {
         return user;
 };
 
+const getUserProfileByUserName = async (userName) => {
+    const user = await User.findOne({where:{user_name:userName}}, {
+            include: [
+                 { model: SocialMediaAccount, as: 'SocialMediaAccounts' }, // Use correct alias
+                    { model: Link, as: 'Links' }, // Use alias defined in User model
+            ]
+    });
+    const link = await Link.findAll({
+        where: {
+        user_id:user.dataValues.id
+        }
+    })
+    const socialAccount = await SocialMediaAccount.findAll({
+        where: {
+        user_id:user.dataValues.id
+        }
+    })
+    console.log(user, "oooo",link)    
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return {...user.dataValues,Links:link, SocialMediaAccount: socialAccount};
+}
 // Update user profile
 const updateUserProfile = async (userId, updateData) => {
     const user = await User.findByPk(userId);
@@ -33,5 +56,6 @@ const updateUserProfile = async (userId, updateData) => {
 
 module.exports = {
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    getUserProfileByUserName
 };

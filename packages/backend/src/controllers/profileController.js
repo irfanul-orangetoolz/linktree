@@ -11,6 +11,17 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+const getUserProfileByUserName = async (req, res) => {
+    try {
+        const { user_name } = req.params;
+        console.log(req.params, "pppp")
+        const profile = await profileService.getUserProfileByUserName(user_name);
+        res.json(profile);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
 const getUserProfilePreview = async (req, res) => {
     try {
         const { id } = req.user.dataValues;
@@ -37,5 +48,6 @@ const updateUserProfile = async (req, res) => {
 module.exports = {
     getUserProfile,
     updateUserProfile,
-    getUserProfilePreview
+    getUserProfilePreview,
+    getUserProfileByUserName
 };

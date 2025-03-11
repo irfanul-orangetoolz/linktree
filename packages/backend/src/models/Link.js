@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     class Link extends Model {
         static associate(models) {
             Link.belongsTo(models.User, { foreignKey: 'user_id' });
+            Link.hasMany(models.Analytic, { foreignKey: "link_id" });
         }
     }
     Link.init(
