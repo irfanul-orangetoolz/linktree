@@ -25,7 +25,6 @@ const getLinkClicks = async (req, res) => {
 // Retrieve top-performing links analytics
 const getTopLinks = async (req, res) => {
     try {
-        console.log(req.user, "user")
 
          const { id } = req.user.dataValues;
         const topLinks = await analyticsService.getTopLinks(id);

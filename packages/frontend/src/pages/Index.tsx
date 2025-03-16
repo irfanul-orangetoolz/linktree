@@ -138,7 +138,7 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
-                  Linktree
+                  SocialNexus
                 </h3>
                 <p className="text-muted-foreground max-w-md">
                   The all-in-one platform for creators to showcase their social media presence and manage their links.
@@ -164,7 +164,7 @@ const Index = () => {
             </div>
             <div className="mt-12 pt-8 border-t">
               <p className="text-center text-muted-foreground text-sm">
-                © {new Date().getFullYear()} Linktree. All rights reserved.
+                © {new Date().getFullYear()} SocialNexus. All rights reserved.
               </p>
             </div>
           </div>

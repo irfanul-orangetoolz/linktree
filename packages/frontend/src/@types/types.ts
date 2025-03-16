@@ -1,0 +1,1 @@
+export type IIntegrationTypes = "facebook" | "instagram" | "linkedin" | "google"

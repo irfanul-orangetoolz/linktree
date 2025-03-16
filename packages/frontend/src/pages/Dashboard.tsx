@@ -62,12 +62,30 @@ const Dashboard = () => {
 										Profile
 									</Link>
 								</Button>
+								<Button
+									
+									variant="outline"
+									className="bg-white/10 hover:bg-white/20 border-white/20"
+									onClick={() => {
+										navigator.clipboard.writeText(
+											`${window.location.origin}/${user.user_name}`
+										)
+										toast(
+											"Profile link copied to clipboard!"
+										)
+									}}
+								>
+									
+										<Share2 className="mr-2 h-4 w-4" /> Share
+										Profile
+									
+								</Button>
 							</div>
 						</div>
 					</section>
 
 					{/* Quick actions */}
-					<section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					{/* <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						<Card>
 							<CardHeader className="pb-2">
 								<CardTitle className="text-lg">Links</CardTitle>
@@ -134,14 +152,14 @@ const Dashboard = () => {
 								</Button>
 							</CardContent>
 						</Card>
-					</section>
+					</section> */}
 
 					{/* Additional quick actions */}
 					<section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						<Card>
 							<CardHeader className="pb-2">
 								<CardTitle className="text-lg">
-									View Profile
+									Public Profile View
 								</CardTitle>
 								<CardDescription>
 									See how others see your profile

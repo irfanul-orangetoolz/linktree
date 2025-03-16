@@ -18,12 +18,10 @@ api.interceptors.request.use(
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`
 		}
-		console.log(config)
 		return config
 	},
 	(error) => Promise.reject(error)
 )
-console.log(API_BASE_URL, api)
 export const signup = (data) =>
 	api.post("/auth/signup", data).then((response) => response.data)
 
@@ -90,6 +88,10 @@ export const getAdminAnalytics = () =>
 
 export const connectSocialMedia = (data) =>
 	api.post("/social/connect", data).then((response) => response.data)
+export const createSocialAccount = (data) =>
+	api.post("/social/accounts/connect-oauth", data).then((response) => response.data)
+export const disconnectSocialAccount = (accountId) =>
+	api.delete(`/social/accounts/${accountId}`).then((response) => response.data)
 export const getSocialAccounts = () =>
 	api.get("/social/accounts").then((response) => response.data)
 export const validateMedia = (url) =>
@@ -99,4 +101,11 @@ export const validateMedia = (url) =>
 export const countClicksAndViews = (data) =>
 	api.post("/analytics/count-click-view", data).then((response) => response.data)
 
+
+export const instagramOAuth = (data) =>
+	api.post("/social/oauth/instagram", data).then((response) => response.data)
+export const linkedinOAuth = (data) =>
+	api.post("/social/oauth/linkedin", data).then((response) => response.data)
+export const facebookOAuth = (data) =>
+	api.post("/social/oauth/facebook", data).then((response) => response.data)
 export default api

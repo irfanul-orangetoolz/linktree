@@ -176,7 +176,7 @@ const PublicProfile = () => {
 					<div className="mt-12 pt-4 border-t w-full text-center">
 						<p className="text-xs text-muted-foreground">
 							Powered by{" "}
-							<span className="font-medium">Linktree</span>
+							<span className="font-medium">SocialNexus</span>
 						</p>
 					</div>
 				</div>

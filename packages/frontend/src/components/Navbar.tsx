@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { useTheme } from "@/contexts/ThemeContext"
-import { Link } from "react-router-dom"
+import { Link,useLocation,useRoutes } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -10,9 +10,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Sun, Moon, User, Settings, LogOut, Home, MenuIcon } from "lucide-react"
+import { Sun, Moon, User, Settings, LogOut, Home, MenuIcon, BarChart, LinkIcon, WifiHighIcon } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useState, useEffect } from "react"
+import Logo from "./logo/Logo"
+import CustomLucideIcon from "./logo/LogoV2"
 
 const Navbar = () => {
 	const { user, logout } = useAuth()
@@ -60,7 +62,7 @@ const Navbar = () => {
 							<div className="flex items-center gap-4 p-4">
 								<Avatar>
 									<AvatarImage
-										src={user.profileImage}
+										src={user.profile_image_url}
 										alt={user.name}
 									/>
 									<AvatarFallback>
@@ -82,6 +84,27 @@ const Navbar = () => {
 							>
 								<Home className="h-4 w-4" />
 								Dashboard
+							</Link>
+							<Link
+								to="/analytics"
+								className="flex items-center gap-2 px-4 py-2 hover:bg-accent rounded-md"
+							>
+								<BarChart className="h-4 w-4" />
+								Analytics
+							</Link>
+							<Link
+								to="/manage-links"
+								className="flex items-center gap-2 px-4 py-2 hover:bg-accent rounded-md"
+							>
+								<LinkIcon className="h-4 w-4" />
+								Manage Links
+							</Link>
+							<Link
+								to="/social-integration"
+								className="flex items-center gap-2 px-4 py-2 hover:bg-accent rounded-md"
+							>
+								<WifiHighIcon className="h-4 w-4" />
+								Social Integrations
 							</Link>
 							<Link
 								to="/profile"
@@ -132,7 +155,7 @@ const Navbar = () => {
 			</SheetContent>
 		</Sheet>
 	)
-
+	const routes = useLocation()
 	return (
 		<nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
 			<div className="container flex h-16 items-center justify-between px-4">
@@ -140,7 +163,8 @@ const Navbar = () => {
 					{isMobile && <MobileMenu />}
 					<Link to="/" className="flex items-center gap-2">
 						<span className="font-bold text-xl bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
-							Linktree
+							{/* <Logo showText={ isMobile?false:true} iconSize={ 12} /> */}
+							<CustomLucideIcon/>
 						</span>
 					</Link>
 				</div>
@@ -150,19 +174,41 @@ const Navbar = () => {
 						<>
 							<Link
 								to="/dashboard"
-								className="text-sm font-medium hover:text-primary-500"
+								className={`text-sm font-medium hover:text-primary-500 ${
+									routes.pathname === "/dashboard"
+										? "text-primary-500"
+										: ""
+								}`}
 							>
 								Dashboard
 							</Link>
 							<Link
 								to="/analytics"
-								className="text-sm font-medium hover:text-primary-500"
+								className={`text-sm font-medium hover:text-primary-500 ${
+									routes.pathname === "/analytics"
+										? "text-primary-500"
+										: ""
+								}`}
 							>
 								Analytics
 							</Link>
 							<Link
+								to="/social-integration"
+								className={`text-sm font-medium hover:text-primary-500 ${
+									routes.pathname === "/social-integration"
+										? "text-primary-500"
+										: ""
+								}`}
+							>
+								Social Integrations
+							</Link>
+							<Link
 								to="/manage-links"
-								className="text-sm font-medium hover:text-primary-500"
+								className={`text-sm font-medium hover:text-primary-500 ${
+									routes.pathname === "/manage-links"
+										? "text-primary-500"
+										: ""
+								}`}
 							>
 								Manage Links
 							</Link>
@@ -171,7 +217,11 @@ const Navbar = () => {
 						<>
 							<Link
 								to="/"
-								className="text-sm font-medium hover:text-primary-500"
+								className={`text-sm font-medium hover:text-primary-500 ${
+									routes.pathname === "/"
+										? "text-primary-500"
+										: ""
+								}`}
 							>
 								Home
 							</Link>
@@ -191,7 +241,7 @@ const Navbar = () => {
 								>
 									<Avatar className="h-8 w-8">
 										<AvatarImage
-											src={user.profileImage}
+											src={user.profile_image_url}
 											alt={user.name}
 										/>
 										<AvatarFallback>

@@ -120,7 +120,7 @@ const Register = () => {
 									required
 								/>
 								<p className="text-xs text-muted-foreground">
-									This will be your profile URL: linktree.com/
+									This will be your profile URL: socialnexus.com/
 									{username || "username"}
 								</p>
 							</div>

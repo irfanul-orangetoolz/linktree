@@ -45,11 +45,57 @@ const disconnectSocialAccount = async (req, res) => {
     }
 };
 
+const createSocialAccount = async (req, res) => {
+    try {
+        const { id } = req.user.dataValues;
+        const data = req.body;
+        const account=await socialService.createSocialAccount(data, id);
+        res.json(account);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
 
-
+const instagramOauthTokenExchange = async (req, res) => {
+    try {
+        const body = req.body
+        const user = req.user.dataValues
+        const auth = await socialService.instagramOauthTokenExchange(body, user)
+        res.json(auth)
+    } catch (error) {
+        console.log(error)
+         res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
+const linkedinOauthTokenExchange = async (req, res) => {
+    try {
+        const body = req.body
+        const user = req.user.dataValues
+        const auth = await socialService.linkedinOauthTokenExchange(body, user)
+        res.json(auth)
+    } catch (error) {
+        console.log(error)
+         res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
+const facebookOauthTokenExchange = async (req, res) => {
+    try {
+        const body = req.body
+        const user = req.user.dataValues
+        const auth = await socialService.facebookOauthTokenExchange(body, user)
+        res.json(auth)
+    } catch (error) {
+        console.log(error)
+         res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
 module.exports = {
     connectSocialAccount,
     getSocialAccounts,
     getSocialData,
-    disconnectSocialAccount
+    disconnectSocialAccount,
+    createSocialAccount,
+    instagramOauthTokenExchange,
+    linkedinOauthTokenExchange,
+    facebookOauthTokenExchange
 };

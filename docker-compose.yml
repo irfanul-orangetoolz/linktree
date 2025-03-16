@@ -16,6 +16,15 @@ services:
             - 7070:7070
         environment:
             - REACT_APP_API_URL=http://localhost:7001/api/v1
+            - REACT_APP_LINKEDIN_CLIENT_ID=86cx0bed8l7njf
+            - REACT_APP_LINKEDIN_CLIENT_SECRET=WPL_AP1.mekwerKhBp6MQxkj.XfAm3A==
+            - REACT_APP_INSTAGRAM_CLIENT_ID=681118174588237
+            - REACT_APP_INSTAGRAM_CLIENT_SECRET=eb75a363dddb56b5ea7a09361f06a2c4
+            - REACT_APP_FACEBOOK_CLIENT_ID=1098589167896870
+            - REACT_APP_FACEBOOK_CLIENT_SECRET=32fd7f9d0a3df29562d30c417d786551
+            - REACT_APP_OAUTH_REDIRECT_URL=https://localhost:7070/social-integration
+            - REACT_APP_GOOGLE_CLIENT_ID=556969250426-vuhjo8l8gj0hqloe123md02nm17nb7f2.apps.googleusercontent.com
+            - REACT_APP_GOOGLE_CLIENT_SECRET=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
         depends_on:
             - backend
         networks:
@@ -43,6 +52,14 @@ services:
             - DB_USER=root
             - DB_PASS=root123
             - DB_NAME=linktree
+            - LINKEDIN_CLIENT_ID=86cx0bed8l7njf
+            - LINKEDIN_CLIENT_SECRET=WPL_AP1.mekwerKhBp6MQxkj.XfAm3A==
+            - INSTAGRAM_CLIENT_ID=681118174588237
+            - INSTAGRAM_CLIENT_SECRET=eb75a363dddb56b5ea7a09361f06a2c4
+            - FACEBOOK_CLIENT_ID=1098589167896870
+            - FACEBOOK_CLIENT_SECRET=32fd7f9d0a3df29562d30c417d786551
+            - GOOGLE_CLIENT_ID=556969250426-vuhjo8l8gj0hqloe123md02nm17nb7f2.apps.googleusercontent.com
+            - GOOGLE_CLIENT_SECRET=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
         depends_on:
             - db
         networks:
