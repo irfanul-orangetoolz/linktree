@@ -7,3 +7,4 @@
 /secrets
 node_modules
 .qodo
+docker-compose.yml
