@@ -1,0 +1,97 @@
+# version: '3.8'
+
+services:
+    frontend:
+        build:
+            context: ./packages/frontend
+            dockerfile: ../../frontend.Dockerfile
+        container_name: linktree-frontend
+        working_dir: /app
+        restart: unless-stopped
+        volumes:
+            - ./packages/frontend:/app
+        command: sh -c "pnpm install && pnpm start"
+        user: root
+        ports:
+            - 7070:7070
+        environment:
+            - REACT_APP_API_URL=http://localhost:7001/api/v1
+            - REACT_APP_LINKEDIN_CLIENT_ID=REACT_APP_LINKEDIN_CLIENT_ID
+            - REACT_APP_LINKEDIN_CLIENT_SECRET=REACT_APP_LINKEDIN_CLIENT_SECRET
+            - REACT_APP_INSTAGRAM_CLIENT_ID=REACT_APP_INSTAGRAM_CLIENT_ID
+            - REACT_APP_INSTAGRAM_CLIENT_SECRET=REACT_APP_INSTAGRAM_CLIENT_SECRET
+            - REACT_APP_FACEBOOK_CLIENT_ID=REACT_APP_FACEBOOK_CLIENT_ID
+            - REACT_APP_FACEBOOK_CLIENT_SECRET=REACT_APP_FACEBOOK_CLIENT_SECRET
+            - REACT_APP_OAUTH_REDIRECT_URL=https://localhost:7070/social-integration
+            - REACT_APP_GOOGLE_CLIENT_ID=REACT_APP_GOOGLE_CLIENT_ID
+            - REACT_APP_GOOGLE_CLIENT_SECRET=REACT_APP_GOOGLE_CLIENT_SECRET
+        depends_on:
+            - backend
+        networks:
+            - linktree-network
+
+    backend:
+        build:
+            context: ./packages/backend
+            dockerfile: ../../backend.Dockerfile
+        container_name: linktree-backend
+        working_dir: /app
+        restart: unless-stopped
+        volumes:
+            - ./packages/backend:/app
+        command: sh -c "pnpm install && pnpm start"
+        user: root
+        ports:
+            - 7001:7001
+        environment:
+            - DATABASE_URL=postgres://postgres:password@db:5432/platform
+            - JWT_SECRET=your_jwt_secret
+            - PORT=7001
+            - NODE_ENV=development
+            - DB_HOST=linktree-db
+            - DB_USER=root
+            - DB_PASS=root123
+            - DB_NAME=linktree
+            - LINKEDIN_CLIENT_ID=LINKEDIN_CLIENT_ID
+            - LINKEDIN_CLIENT_SECRET=LINKEDIN_CLIENT_SECRET
+            - INSTAGRAM_CLIENT_ID=INSTAGRAM_CLIENT_ID
+            - INSTAGRAM_CLIENT_SECRET=INSTAGRAM_CLIENT_SECRET
+            - FACEBOOK_CLIENT_ID=FACEBOOK_CLIENT_ID
+            - FACEBOOK_CLIENT_SECRET=FACEBOOK_CLIENT_SECRET
+            - GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID
+            - GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET
+        depends_on:
+            - db
+        networks:
+            - linktree-network
+
+    db:
+        image: postgres:13
+        container_name: linktree-db
+        restart: unless-stopped
+        volumes:
+            - /var/lib/postgresql/linktree/data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: root123
+            POSTGRES_DB: linktree-db
+            POSTGRES_USER: root
+        networks:
+            - linktree-network
+
+    adminer:
+        image: adminer
+        container_name: linktree-adminer
+        restart: unless-stopped
+        ports:
+            - 7002:8080
+        depends_on:
+            - db
+        networks:
+            - linktree-network
+
+volumes:
+    postgres_data:
+
+networks:
+    linktree-network:
+        driver: bridge
