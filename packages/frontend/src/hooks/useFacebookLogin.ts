@@ -15,16 +15,20 @@ interface UseFacebookLoginProps {
 	redirectUri: string // Must match the redirect URI in your Facebook App settings
 	clientSecret: string // Facebook App Secret (keep secure on backend in production)
 	scope?: string // Permissions, e.g., 'pages_read_engagement'
+	openFBPageSelect: boolean
+	setOpenFBPageSelect:(open:boolean)=>void
 }
 
 const useFacebookLogin = ({
 	clientId,
 	redirectUri,
 	clientSecret,
-	scope = "public_profile,email,pages_read_engagement,pages_show_list" // Default scopes for follower count access
+	scope = "public_profile,email,pages_read_engagement,pages_show_list", // Default scopes for follower count access
+	openFBPageSelect,
+	setOpenFBPageSelect
 }: UseFacebookLoginProps) => {
 	const [facebookData, setFacebookData] =
-		useState<FacebookAuthResponse | null>(null)
+		useState<any | null>(null)
 
 	// Check for code in URL after redirect
 	useEffect(() => {
@@ -66,6 +70,7 @@ const useFacebookLogin = ({
 			// Call your backend to exchange the code for an access token
 			const response = await facebookOAuth({ code, redirectUri })
 			if (response) {
+				setOpenFBPageSelect(true)
 				console.log("Facebook OAuth response:", response)
 				setFacebookData(response)
 				localStorage.removeItem("currentOAuth") // Clean up

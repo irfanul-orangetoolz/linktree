@@ -120,7 +120,7 @@ const ProfilePreview = () => {
 								Your public profile:
 							</span>
 							<div className="font-medium">
-								{window.location.origin}/{user.user_name}
+								{window.location.origin}/{user?.user_name}
 							</div>
 						</div>
 					</div>
@@ -160,7 +160,7 @@ const ProfilePreview = () => {
 									<AvatarFallback>
 										{preview?.name
 											?.slice(0, 2)
-											.toUpperCase()}
+											?.toUpperCase()}
 									</AvatarFallback>
 								</Avatar>
 								<h2 className="text-2xl font-bold">
@@ -179,7 +179,7 @@ const ProfilePreview = () => {
 							<div className="p-6 pt-3 space-y-3">
 								{/* Links */}
 								{preview?.Links?.length > 0 ? (
-									preview.Links.map((link, index) => (
+									preview?.Links?.map((link, index) => (
 										<a
 											key={index}
 											href={link.url}
@@ -208,7 +208,7 @@ const ProfilePreview = () => {
 											Connected Accounts
 										</h3>
 										<div className="space-y-3">
-											{preview.SocialMediaAccounts.map(
+											{preview?.SocialMediaAccounts?.map(
 												(account, index) => (
 													<div
 														key={index}
@@ -225,7 +225,7 @@ const ProfilePreview = () => {
 															</span>
 														</div>
 														<div className="text-sm text-muted-foreground">
-															{account.follower_count.toLocaleString()}{" "}
+															{account.follower_count?.toLocaleString() ?? 0}{" "}
 															followers
 														</div>
 													</div>

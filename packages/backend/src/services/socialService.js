@@ -20,7 +20,6 @@ const connectSocialAccount = async (userId, platform, accessToken) => {
 // Retrieve connected social media accounts
 const getSocialAccounts = async (userId) => {
     const accounts = await SocialMediaAccount.findAll({ where: { user_id: userId } });
-    console.log("lllllllllllllllllllll", accounts, userId)
     const socialAccounts = []
     for (const account of accounts) {
         delete account.dataValues.access_token;
@@ -220,6 +219,43 @@ const facebookOauthTokenExchange = async (body, user) => {
         return null
     }
 }
+const onFbPageSelect = async (pageId) => {
+    try {
+        const fbAccount = await SocialMediaAccount.findOne({
+            where: {
+            platform:"facebook"
+            }
+        })
+        
+        const fBPages = fbAccount.dataValues?.meta_data?.accounts?.data
+        if (fBPages) {
+            const selectedPage = fBPages.find((page) => page.id === pageId)
+            if (selectedPage) {
+                const updatedFB = {
+                    ...fbAccount,
+                    follower_count: selectedPage?.followers_count || 0,
+                    meta_data:{
+                        ...fbAccount.meta_data,
+                        selectedPage:selectedPage
+                    },
+                    updated_at: new Date()
+                
+                }
+                console.log(updatedFB, "update")
+                await SocialMediaAccount.update(updatedFB, { where: { id: fbAccount?.id } })
+                return fbAccount
+            } else {
+                console.log("selected worng", selectedPage, fBPages)
+                return null
+            }
+        } else {
+            console.log(fBPages,"pageNotfound", fbAccount)
+            return null
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 const linkedinOauthTokenExchange = async (body, user) => {
     try {
         const { code, redirectUri } = body
@@ -363,5 +399,6 @@ module.exports = {
     createSocialAccount,
     instagramOauthTokenExchange,
     linkedinOauthTokenExchange,
-    facebookOauthTokenExchange
+    facebookOauthTokenExchange,
+    onFbPageSelect
 };

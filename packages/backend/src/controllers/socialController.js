@@ -89,6 +89,16 @@ const facebookOauthTokenExchange = async (req, res) => {
          res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }
+const onFbPageSelect = async (req, res) => {
+    try {
+        const body = req.body
+        const page = await socialService.onFbPageSelect(body.selectedPage)
+        res.json(page)
+    } catch (error) {
+         console.log(error)
+         res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
 module.exports = {
     connectSocialAccount,
     getSocialAccounts,
@@ -97,5 +107,6 @@ module.exports = {
     createSocialAccount,
     instagramOauthTokenExchange,
     linkedinOauthTokenExchange,
-    facebookOauthTokenExchange
+    facebookOauthTokenExchange,
+    onFbPageSelect
 };

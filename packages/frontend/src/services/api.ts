@@ -108,4 +108,6 @@ export const linkedinOAuth = (data) =>
 	api.post("/social/oauth/linkedin", data).then((response) => response.data)
 export const facebookOAuth = (data) =>
 	api.post("/social/oauth/facebook", data).then((response) => response.data)
+export const onFacebookPageSelection = (data) =>
+	api.post("/social/on-fb-page-select", data).then((response) => response.data)
 export default api

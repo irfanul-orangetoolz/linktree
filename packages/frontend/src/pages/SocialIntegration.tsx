@@ -5,7 +5,8 @@ import {
 	getSocialAccounts,
 	connectSocialMedia,
 	createSocialAccount,
-	disconnectSocialAccount
+	disconnectSocialAccount,
+	onFacebookPageSelection
 } from "@/services/api"
 import Navbar from "@/components/Navbar"
 import FacebookLogin from "react-facebook-login"
@@ -37,6 +38,24 @@ import useGoogleLogin from "@/hooks/useGoogleLogin"
 import { IIntegrationTypes } from "@/@types/types"
 import { getENV } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Select } from "@radix-ui/react-select"
+import {
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue
+} from "@/components/ui/select"
 
 const SocialIntegration = () => {
 	const { user } = useAuth()
@@ -46,14 +65,19 @@ const SocialIntegration = () => {
 	const [connectedAccounts, setConnectedAccounts] = useState([])
 	const [loading, setLoading] = useState(true)
 	const navigate = useNavigate()
+	const [openFBPageSelect, setOpenFBPageSelect] = useState(false)
+	const [selectedFBPage, setSelectedFBPage] = useState<any>(null)
 	// const { login } = useFacebookLogin({
 	// 	appId: facebook.client_id
 	// })
-	const { facebookLogin,facebookData } = useFacebookLogin({
+	const { facebookLogin, facebookData } = useFacebookLogin({
 		clientId: facebook.client_id,
 		clientSecret: facebook.client_secret,
-		redirectUri: oauth.redirect_url
+		redirectUri: oauth.redirect_url,
+		openFBPageSelect,
+		setOpenFBPageSelect
 	})
+	console.log(facebookData, "PPP")
 	const { linkedinLogin } = useLinkedInLogin({
 		clientId: linkedin.client_id,
 		redirectUri: oauth.redirect_url,
@@ -195,6 +219,12 @@ const SocialIntegration = () => {
 		}
 	]
 
+	const onPageSelectSubmit = async () => {
+		const data = await onFacebookPageSelection({ selectedPage: selectedFBPage })
+		if (data) {
+			setOpenFBPageSelect(false)
+		}
+	}
 	return (
 		<div className="min-h-screen flex flex-col">
 			<Navbar />
@@ -349,6 +379,79 @@ const SocialIntegration = () => {
 						)
 					})}
 				</div>
+				{openFBPageSelect && (
+					<Dialog
+						open={openFBPageSelect}
+						onOpenChange={setOpenFBPageSelect}
+					>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>
+									Select You Facebook Page
+								</DialogTitle>
+								<DialogDescription>
+									Select You Facebook Page
+								</DialogDescription>
+							</DialogHeader>
+
+							<div className="space-y-4 py-4">
+								<div className="space-y-2">
+									<Label htmlFor="title">Facebook Page</Label>
+									{facebookData &&
+									facebookData?.meta_data?.accounts?.data &&
+									facebookData?.meta_data?.accounts?.data
+										.length > 0 ? (
+										<Select onValueChange={setSelectedFBPage}>
+											<SelectTrigger>
+												<SelectValue placeholder="Select your Page" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>
+														Select A Page
+													</SelectLabel>
+													{facebookData?.meta_data?.accounts?.data?.map(
+														(option) => (
+															<SelectItem
+																key={option.id}
+																value={
+																	option.id
+																}
+															>
+																{option.name}
+															</SelectItem>
+														)
+													)}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									) : (
+										""
+									)}
+								</div>
+
+								{/* {validationError && (
+									<div className="text-destructive text-sm flex items-center gap-2">
+										<AlertCircle className="h-4 w-4" />
+										{validationError}
+									</div>
+								)} */}
+							</div>
+
+							<DialogFooter>
+								<Button
+									variant="outline"
+									onClick={() => setOpenFBPageSelect(false)}
+								>
+									Cancel
+								</Button>
+								<Button onClick={() => onPageSelectSubmit()}>
+									Save
+								</Button>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
+				)}
 			</main>
 		</div>
 	)

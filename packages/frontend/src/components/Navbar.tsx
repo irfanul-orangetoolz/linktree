@@ -14,7 +14,6 @@ import { Sun, Moon, User, Settings, LogOut, Home, MenuIcon, BarChart, LinkIcon, 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useState, useEffect } from "react"
 import Logo from "./logo/Logo"
-import CustomLucideIcon from "./logo/LogoV2"
 
 const Navbar = () => {
 	const { user, logout } = useAuth()
@@ -163,8 +162,8 @@ const Navbar = () => {
 					{isMobile && <MobileMenu />}
 					<Link to="/" className="flex items-center gap-2">
 						<span className="font-bold text-xl bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
-							{/* <Logo showText={ isMobile?false:true} iconSize={ 12} /> */}
-							<CustomLucideIcon/>
+							
+							<Logo showText={isMobile ? false : true}  iconSize={30}/>
 						</span>
 					</Link>
 				</div>
